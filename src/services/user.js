@@ -49,4 +49,12 @@ module.exports = {
 
     return token;
   },
+
+  async getAll() {
+    const users = await User.findAll({
+      attributes: { exclude: ['password'] },
+    });
+
+    return users;
+  },
 };
