@@ -12,4 +12,10 @@ module.exports = {
 
     return category;
   },
+
+  async getAll() {
+    const categories = await Category.findAll();
+    
+    return categories;
+  },
 };
