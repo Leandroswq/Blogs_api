@@ -57,4 +57,14 @@ module.exports = {
 
     return users;
   },
+
+  async getById(id) {
+    const user = await User.findByPk(id, {
+      attributes: { exclude: 'password' },
+    });
+
+    if (!user) throw new httpErrors.NotFound('User does not exist');
+
+    return user;
+  },
 };
