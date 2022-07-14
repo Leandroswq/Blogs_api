@@ -1,10 +1,7 @@
 const httpErrors = require('http-errors');
 const Joi = require('joi');
-const jwt = require('jsonwebtoken');
 const { User } = require('../database/models/index');
-require('dotenv').config();
-
-const jwtSecrete = process.env.JWT_SECRET;
+const globalServices = require('./global');
 
 module.exports = {
   async verifyLogin(email, password) {
@@ -25,7 +22,7 @@ module.exports = {
     if (user === null || user.password !== password) {
       throw new httpErrors.BadRequest('Invalid fields');
     }
-    const token = jwt.sign({ id: user.id }, jwtSecrete, { expiresIn: '7d' });
+    const token = globalServices.generateToken({ id: user.id });
 
     return token;
   },
