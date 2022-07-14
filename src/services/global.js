@@ -1,3 +1,4 @@
+const httpErrors = require('http-errors');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
@@ -8,4 +9,13 @@ module.exports = {
     const token = jwt.sign(payload, jwtSecrete, { expiresIn: '7d' });
     return token;
   }, 
+  validateToken(token) {
+    if (!token) throw new httpErrors.Unauthorized('Token not found');
+    try {
+      const { iat, exp, ...data } = jwt.verify(token, jwtSecrete);
+      return data;
+    } catch (_err) {
+      throw new httpErrors.Unauthorized('Expired or invalid token');
+    }
+  },
 };

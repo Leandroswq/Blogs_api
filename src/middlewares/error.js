@@ -4,8 +4,9 @@ const errorMiddleware = (err, _req, res, _next) => {
   switch (name) {
     case 'NotFoundError': return res.status(404).json({ message });
     case 'BadRequestError': return res.status(400).json({ message });
-    case 'UnprocessableEntityError': return res.status(422).json({ message });
-    default: return res.status(500).send();
+    case 'ConflictError': return res.status(409).json({ message });
+    case 'UnauthorizedError': return res.status(401).json({ message });
+    default: console.log(name, message); return res.status(500).send();
   }
 };
 
