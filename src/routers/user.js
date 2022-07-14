@@ -5,6 +5,9 @@ const globalMiddlewares = require('../middlewares/global');
 const router = express.Router();
 
 router.post('/', controllers.createUser);
-router.get('/', globalMiddlewares.validateToken, controllers.getAll);
+
+router.use(globalMiddlewares.validateToken);
+router.get('/', controllers.getAll);
+router.get('/:id', controllers.getById);
 
 module.exports = router;
