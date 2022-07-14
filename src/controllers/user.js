@@ -13,4 +13,13 @@ module.exports = {
 
     res.status(201).json({ token });
   },
+  /**
+  * @param {import('express').Request} req
+  * @param {import('express').Response} res
+  */
+  async getAll(_req, res) {
+    const users = await services.getAll();
+
+    res.status(200).json(users);
+  },
 };
