@@ -8,7 +8,7 @@ module.exports = {
   validateToken(req, _res, next) {
     const { authorization } = req.headers;
     const data = services.validateToken(authorization);
-    req.body.content = { data };
+    req.user = data;
 
     next();
   },
