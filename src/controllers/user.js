@@ -34,4 +34,11 @@ module.exports = {
 
     res.status(200).json(user);
   },
+
+  async deleteUser(req, res) {
+    const { id } = req.user;
+
+    await services.deleteUser({ where: { id } });
+    res.sendStatus(204);
+  },
 };
