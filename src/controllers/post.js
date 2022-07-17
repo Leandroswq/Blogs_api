@@ -40,4 +40,14 @@ module.exports = {
     
     res.status(200).json(post);
   },
+
+  async deletePost(req, res) {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    await service.validatePostUserId(userId, id);
+    await service.deletePost(id);
+
+    res.sendStatus(204);
+  },
 };
