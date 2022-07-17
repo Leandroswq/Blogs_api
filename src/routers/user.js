@@ -8,6 +8,7 @@ router.post('/', controllers.createUser);
 
 router.use(globalMiddlewares.validateToken);
 router.get('/', controllers.getAll);
+router.delete('/me', controllers.deleteUser);
 router.get('/:id', controllers.getById);
 
 module.exports = router;
