@@ -33,11 +33,6 @@ function validateUpdatePostData(postData) {
   }
 }
 
-function validatePostUserId(userId, id) {
-  if (Number(userId) !== Number(id)) {
-    throw new httpErrors.Unauthorized('Unauthorized user');
-  }
-}
 module.exports = {
   async validateCreatePost(postData) {
     validatecCeatePostData(postData);
@@ -107,10 +102,17 @@ module.exports = {
     return post;
   },
 
-  async validateUpdatePost(userId, id, data) {
-    const post = await this.getById(id);
+ async validatePostUserId(userId, postId) {
+    const post = await this.getById(postId);
     const postUserId = post.toJSON().user.id;
-    validatePostUserId(userId, postUserId);
+
+    if (Number(userId) !== Number(postUserId)) {
+      throw new httpErrors.Unauthorized('Unauthorized user');
+    }
+  },
+
+  async validateUpdatePost(userId, id, data) {
+    await this.validatePostUserId(userId, id);
     validateUpdatePostData(data);
   },
 
