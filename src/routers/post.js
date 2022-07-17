@@ -8,5 +8,6 @@ router.use(globalMiddlewares.validateToken);
 router.post('/', controler.createPost);
 router.get('/', controler.getAll);
 router.get('/:id', controler.getById);
+router.put('/:id', controler.updatePost);
 
 module.exports = router;
