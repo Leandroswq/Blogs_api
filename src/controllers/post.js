@@ -14,5 +14,10 @@ module.exports = {
 
     res.status(201).json(post);
   },
-    
+  
+  async getAll(_req, res) {
+    const posts = await service.getAll();
+
+    res.status(200).json(posts);
+  },
 };
