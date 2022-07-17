@@ -21,6 +21,23 @@ function validatecCeatePostData(postData) {
     throw new httpErrors.BadRequest('Some required fields are missing');
   }
 }
+
+function validateUpdatePostData(postData) {
+  const { error } = Joi.object({
+    title: Joi.string().required(),
+    content: Joi.string().required(),
+  }).validate(postData);
+
+  if (error) {
+    throw new httpErrors.BadRequest('Some required fields are missing');
+  }
+}
+
+function validatePostUserId(userId, id) {
+  if (Number(userId) !== Number(id)) {
+    throw new httpErrors.Unauthorized('Unauthorized user');
+  }
+}
 module.exports = {
   async validateCreatePost(postData) {
     validatecCeatePostData(postData);
@@ -55,16 +72,16 @@ module.exports = {
     const posts = await BlogPost.findAll({
       include: [
         {
-        model: User,
-        as: 'user',
-        attributes: { exclude: ['password'] }, 
-      },
-      {
-        model: Category,
-        as: 'categories',
-        through: { attributes: [] },
-      },
-    ],
+          model: User,
+          as: 'user',
+          attributes: { exclude: ['password'] },
+        },
+        {
+          model: Category,
+          as: 'categories',
+          through: { attributes: [] },
+        },
+      ],
     });
 
     return posts;
@@ -74,19 +91,41 @@ module.exports = {
     const post = await BlogPost.findByPk(id, {
       include: [
         {
-        model: User,
-        as: 'user',
-        attributes: { exclude: ['password'] }, 
-      },
-      {
-        model: Category,
-        as: 'categories',
-        through: { attributes: [] },
-      },
-    ],
+          model: User,
+          as: 'user',
+          attributes: { exclude: ['password'] },
+        },
+        {
+          model: Category,
+          as: 'categories',
+          through: { attributes: [] },
+        },
+      ],
     });
 
     if (!post) throw new httpErrors.NotFound('Post does not exist');
+    return post;
+  },
+
+  async validateUpdatePost(userId, id, data) {
+    const post = await this.getById(id);
+    const postUserId = post.toJSON().user.id;
+    validatePostUserId(userId, postUserId);
+    validateUpdatePostData(data);
+  },
+
+  async updatePost(id, data) {
+    const post = BlogPost.update(
+      {
+        title: data.title,
+        content: data.content,
+      },
+      {
+        where: {
+          id,
+        },
+      },
+    );
 
     return post;
   },
