@@ -28,4 +28,16 @@ module.exports = {
     
     res.status(200).json(post);
   },
+
+  async updatePost(req, res) {
+    const { id } = req.params;
+    const postData = req.body;
+    const userId = req.user.id;
+
+    await service.validateUpdatePost(userId, id, postData);
+    await service.updatePost(id, postData);
+    const post = await service.getById(id);
+    
+    res.status(200).json(post);
+  },
 };
