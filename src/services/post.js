@@ -129,4 +129,10 @@ module.exports = {
 
     return post;
   },
+
+  async deletePost(id) {
+    const response = await BlogPost.destroy({ where: { id } });
+
+    return response;
+  },
 };
