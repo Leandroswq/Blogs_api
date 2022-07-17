@@ -67,4 +67,10 @@ module.exports = {
 
     return user;
   },
+
+  async deleteUser(id) {
+    const response = await User.destroy(id);
+
+    return response;
+  },
 };
