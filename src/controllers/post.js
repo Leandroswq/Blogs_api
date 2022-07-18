@@ -20,12 +20,12 @@ module.exports = {
 
     res.status(200).json(posts);
   },
- 
+
   async getById(req, res) {
     const { id } = req.params;
 
     const post = await service.getById(id);
-    
+
     res.status(200).json(post);
   },
 
@@ -37,7 +37,7 @@ module.exports = {
     await service.validateUpdatePost(userId, id, postData);
     await service.updatePost(id, postData);
     const post = await service.getById(id);
-    
+
     res.status(200).json(post);
   },
 
@@ -49,5 +49,16 @@ module.exports = {
     await service.deletePost(id);
 
     res.sendStatus(204);
+  },
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
+  async getByTitleOrContent(req, res) {
+    const { q } = req.query;
+    console.log(req.query);
+    const posts = await service.getByTitleOrContent(q || '');
+
+    res.status(200).json(posts);
   },
 };
