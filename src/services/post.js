@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const httpErrors = require('http-errors');
+const { Op } = require('sequelize');
 const {
   BlogPost,
   PostCategory,
@@ -136,5 +137,26 @@ module.exports = {
     const response = await BlogPost.destroy({ where: { id } });
 
     return response;
+  },
+
+  async getByTitleOrContent(q) {
+    const posts = await BlogPost.findAll({
+      where: { [Op.or]: [
+        { title: { [Op.substring]: q } },
+        { content: { [Op.substring]: q } },
+      ] },
+      include: [{
+          model: User,
+          as: 'user',
+          attributes: { exclude: ['password'] },
+        },
+        {
+          model: Category,
+          as: 'categories',
+          through: { attributes: [] },
+        }],
+    });
+
+    return posts;
   },
 };
