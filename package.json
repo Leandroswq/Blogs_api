@@ -31,7 +31,11 @@
     "seed": "npx sequelize-cli db:seed:all",
     "debug": "nodemon .",
     "lint": "eslint --no-inline-config --no-error-on-unmatched-pattern -c .eslintrc.json .",
-    "swagger-autogen": "node swagger.js"
+    "swagger-autogen": "node swagger.js",
+    "compose:down": "docker-compose down",
+    "compose:up": "docker-compose up -d --build",
+    "container:start": "docker exec -it blogs_api npm start" ,
+    "compose": "npm run compose:down && npm run compose:up"
   },
   "devDependencies": {
     "eslint": "6.8.0",
