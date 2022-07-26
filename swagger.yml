@@ -307,6 +307,8 @@ paths:
     get:
       summary: Procurar um post
       description: Retorna os posts que possua no title ou no content o termo da pesquisa
+      tags: 
+        - Posts
       security:
         - apiKey: []
       parameters:
