@@ -2,8 +2,11 @@ const express = require('express');
 require('express-async-errors');
 const swaggerUi = require('swagger-ui-express');
 const cors = require('cors');
+const YAML = require('yamljs');
 const errorMiddleware = require('./middlewares/error');
-const swaggerDocument = require('../swagger.json');
+
+const swaggerDocument = YAML.load('swagger.yml');
+
 // ...
 
 const app = express();

@@ -1,0 +1,541 @@
+openapi: 3.0.0
+
+info:
+  version: 1.0.0
+  title: Blogs API
+  description: Uma API para um site de blogs
+
+servers:
+- url: http://localhost:3000/
+- url: http://localhost:3000/
+
+tags:
+- name: Login
+  description: ''
+- name: User
+  description: ''
+- name: Categories
+  description: ''
+- name: Posts
+  description: ''
+
+paths:
+  "/login/":
+    post:
+      summary: "Login do usuário"
+      tags:
+      - Login
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/loginBodyRequest"
+      
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+             schema:
+                $ref: "#/components/schemas/token"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: "#/components/schemas/parametroVazio"
+                    - $ref: "#/components/schemas/parametrosInvalidos"
+
+  "/user/":
+    post:
+      summary: 'Cadastrar usuário'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/novoUsuarioBodyRequest"
+      tags:
+        - "User"
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/token"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                  - $ref: "#/components/schemas/invalidDisplayName"
+                  - $ref: "#/components/schemas/invalidEmail"
+                  - $ref: "#/components/schemas/invalidPassword"
+                  - $ref: "#/components/schemas/usuarioJaExiste"
+      
+    get:
+      summary: 'Listar usuários'
+      security:
+        - apiKey: []
+      tags:
+        - "User"
+      responses:
+        '200':
+          description: OK
+  
+  "/user/me":
+    delete:
+      summary: Deletar usuário
+      tags:
+        - "User"
+      security:
+        - apiKey: []
+      responses:
+        '204':
+          description: No Content
+  
+  "/user/{id}":
+    get:
+      summary: 'Buscar usuário pelo id'
+      security:
+        - apiKey: []
+      tags:
+        - "User"
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/usuario'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/usuarioNãoExist'
+
+  "/categories/":
+    post:
+      summary: 'Criar um categoria'
+      security:
+        - apiKey: []
+      tags:
+        - "Categories"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Nome da categoria
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/categoria'
+
+    get:
+      summary: 'Listar todas as categorias'
+      tags:
+        - "Categories"
+      security:
+        - apiKey: []
+      
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/categoria'
+
+  "/post/":
+    post:
+      summary: 'Criar um post'
+      security:
+        - apiKey: []
+      tags:
+        - "Posts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/criarPostRequest"
+
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/criarPostResponse"
+        '400': 
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: "#/components/schemas/parametroVazio"
+                    - $ref: "#/components/schemas/categoriaNaoExiste"
+    
+    get:
+      summary: 'Listar posts'
+      description: Lista dodos os posts do usuario logado
+      security:
+        - apiKey: []
+      tags:
+        - "Posts"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listarPosts'
+  
+  "/post/{id}":
+    get:
+      summary: 'Busca o post pelo id'
+      tags:
+        - "Posts"
+      security:
+        - apiKey: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/post'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+             schema:
+                $ref: '#/components/schemas/postNaoExiste'
+
+    put:
+      summary: 'Editar um post'
+      tags:
+        - Posts
+      security:
+        - apiKey: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/post'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedUser'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/parametroVazio'
+          
+    delete:
+      summary: 'Deletar um produto'
+      security:
+        - apiKey: []
+      tags:
+        - Posts
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedUser'
+
+  "/post/search":
+    get:
+      summary: Procurar um post
+      description: Retorna os posts que possua no title ou no content o termo da pesquisa
+      security:
+        - apiKey: []
+      parameters:
+      - name: q
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listarPosts'
+
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: Authorization
+      in: header
+  schemas:
+    loginBodyRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: exemplo@exemplo.com
+          format: email
+        password:
+          type: string
+          example: Senh@123
+          format: password
+
+    token:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: >-
+            yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUiLCJpYXQiOjE1MTYyMzkwMjJ9.bf9G6QZ5t-xlHtQhpj0CvLixq3YFf3s4tbd96Grmh-Q
+    
+    parametroVazio:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Some required fields are missing
+    
+    parametrosInvalidos:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid fields
+    
+    novoUsuarioBodyRequest:
+      type: object
+      properties:
+        displayName:
+          type: string
+          example: Exemplo Exemplo
+        email:
+          type: string
+          example: exemplo@exemplo.com
+          format: email
+        password:
+          type: string
+          example: 'Senh@123'
+          format: password
+        image:
+          type: string
+          example: https://dummyimage.com/600x400/000/fff
+
+    invalidDisplayName:
+      type: object
+      properties:
+        message:
+          type: string
+          example: '"displayName" length must be at least 8 characters long'
+            
+    invalidEmail:
+      type: object
+      properties:
+        message:
+          type: string
+          example: '"email" must be a valid email'
+    
+    invalidPassword:
+      type: object
+      properties:
+        message:
+          type: string
+          example: '"password" length must be at least 6 characters long'
+    
+    usuarioJaExiste:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'User already registered'
+
+    usuario:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        displayName:
+          type: string
+          example: Exemplo Exemplo
+        email:
+          type: string
+          example: exemplo@exemplo.com
+          format: email
+        image:
+          type: string
+          example: https://dummyimage.com/600x400/000/fff
+    
+    usuarioNãoExist:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'User does not exist'
+
+    categoria: 
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: NodeJs
+    
+    criarPostRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Titulo do post
+        content:
+          type: string
+          example: Conteúdo do post
+        categoryIds:
+          type:  array
+          example:
+            - 1
+            - 2
+    
+    criarPostResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 5
+        title:
+          type: string
+          example: Titulo do post
+        content:
+          type: string
+          example: Conteúdo do post
+        userId: 
+          type: integer
+          example: 2
+        updated: 
+          type: string
+          example: 2022-05-18T18:00:01.196Z
+        published: 
+          type: string
+          example: 2022-05-18T18:00:01.196Z
+    
+    categoriaNaoExiste:
+      type: object
+      properties:
+        message:
+          type: string
+          example: '"categoryIds" not found'
+
+    post:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 3
+        title:
+          type: string
+          example: Titulo do post
+        content:
+          type: string
+          example: Conteúdo do post
+        userId:
+          type: number
+          example: 1
+        updated:
+          type: string
+          example: '2022-05-18T18:00:01.196Z'
+        published:
+          type: string
+          example: '2022-05-18T18:00:01.196Z'
+        user:
+          $ref: '#/components/schemas/usuario'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/categoria'
+
+    listarPosts:
+      type: array
+      items:
+        $ref: '#/components/schemas/post'
+
+    postNaoExiste:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Post does not exist'
+    
+    UnauthorizedUser:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Unauthorized user
+    
