@@ -39,12 +39,19 @@ npm install
 npm start
 ~~~
 <br>
+
 ## Docker  
+
+<details>
+
+<summary>Opção 1</summary>
+
 ### 3 - Inicialize o compose
 
 ~~~
 npm run compose
 ~~~
+
 <br>
 
 ### 4 - Inicialize a aplicação dentro do container
@@ -52,6 +59,23 @@ npm run compose
 ~~~
 npm run container:start
 ~~~
+
+Se der o erro `ERROR: connect ECONNREFUSED 123.123.123.1:3306`
+siginifica que não deu tempo do banco de dados startar. Para resolver isso basta esperar alguns segundos e rodar o comando novamente.
+</details>
+
+<details>
+
+<summary>Opção 2</summary>
+
+### 3 Inicialise o compose junto com a aplicação
+
+~~~
+npm run compose:start
+~~~
+
+</details>
+
 <br>
 
 # Como acessar a documentação

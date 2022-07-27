@@ -35,7 +35,8 @@
     "compose:down": "docker-compose down",
     "compose:up": "docker-compose up -d --build",
     "container:start": "docker exec -it blogs_api npm start" ,
-    "compose": "npm run compose:down && npm run compose:up"
+    "compose": "npm run compose:down && npm run compose:up",
+    "compose:start": "npm run compose && sleep 40  && npm run container:start"
   },
   "devDependencies": {
     "eslint": "6.8.0",
