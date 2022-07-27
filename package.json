@@ -32,11 +32,16 @@
     "debug": "nodemon .",
     "lint": "eslint --no-inline-config --no-error-on-unmatched-pattern -c .eslintrc.json .",
     "swagger-autogen": "node swagger.js",
+
+    "compose:prestart": "docker exec -it blogs_api npm run prestart" ,
+    "container:start": "docker exec -it blogs_api npm start" ,
     "compose:down": "docker-compose down",
     "compose:up": "docker-compose up -d --build",
-    "container:start": "docker exec -it blogs_api npm start" ,
     "compose": "npm run compose:down && npm run compose:up",
-    "compose:start": "npm run compose && sleep 40  && npm run container:start"
+    "compose:start": "npm run compose && sleep 40  && npm run container:start",
+    "container:drop": "docker exec -it blogs_api npm run drop",
+    "container:seed": "docker exec -it blogs_api npm run seed",
+    "container:debug": "docker exec -it blogs_api npm run debug"
   },
   "devDependencies": {
     "eslint": "6.8.0",
